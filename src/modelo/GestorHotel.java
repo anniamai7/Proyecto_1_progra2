@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modelo;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -63,4 +64,23 @@ public class GestorHotel {
         habitaciones.add(nueva);
         return true;
     }
+    
+    public int contarHabitacionesDisponibles(LocalDate fecha) {
+        return contarRecursivo(habitaciones, fecha, 0);
+    }
+    
+    private int contarRecursivo(List<habitacion> lista, LocalDate fecha, int index) {
+    if (index >= lista.size()) {
+        return 0;
+    }
+    
+    int cuenta = 0;
+    habitacion h = lista.get(index);
+    
+    if (h.isDisponible(fecha)) { 
+        cuenta = 1;
+    }
+    
+    return cuenta + contarRecursivo(lista, fecha, index + 1);
+}
 }
