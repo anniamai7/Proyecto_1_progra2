@@ -4,12 +4,15 @@
  */
 package modelo;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author UTN
  */
 public abstract class habitacion {
     private int numero;
+    protected boolean disponible = true;
 
     public int getNumero() {
         return numero;
@@ -17,6 +20,13 @@ public abstract class habitacion {
 
     public habitacion(int numero) {
         this.numero = numero;
+    }
+    public boolean isDisponible(LocalDate fechaConsulta) {
+        return this.disponible;
+    }
+    
+    public void setDisponible(boolean disponible) {
+    this.disponible = disponible;
     }
     
     public abstract int getCapacidad();

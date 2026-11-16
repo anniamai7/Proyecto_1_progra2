@@ -11,11 +11,11 @@ package modelo;
 public class HabitacionFactory {
     public static habitacion crearHabitacion(int numero, String tipo){
         switch(tipo.trim().toLowerCase()){
-            case "Individual":
+            case "individual":
                 return new HabitacionIndividual(numero);
-            case "Doble":
+            case "doble":
                 return new HabitacionDoble(numero);
-            case "Familiar":
+            case "familiar":
                 return new HabitacionFamiliar(numero);
             default:
                 throw new IllegalArgumentException("Tipo de habitación no reconocido: " + tipo);
