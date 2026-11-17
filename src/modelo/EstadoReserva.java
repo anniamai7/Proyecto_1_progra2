@@ -10,7 +10,7 @@ package modelo;
  */
 public enum EstadoReserva {
     Confirmada, 
-    Hospedadoo,
+    Hospedado,
     Finalizada, 
     Vencida
 }
