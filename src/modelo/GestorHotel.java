@@ -137,4 +137,19 @@ public class GestorHotel {
         }
         reservas.add(r);
     }
+        public synchronized void realizarCheckIn(String codigo){
+        Reserva r = buscarReserva(codigo);
+        if (r == null || r.getEstado() != EstadoReserva.Confirmada){
+            throw new IllegalArgumentException("No se puede realizar el check-in.");
+        }
+        r.setEstado(EstadoReserva.Hospedadoo);
+    }
+      public synchronized void realizarCheckOut(String codigo){
+        Reserva r = buscarReserva(codigo);
+        if (r == null || r.getEstado() != EstadoReserva.Hospedadoo){
+            throw new IllegalArgumentException("No se puede realizar el check-out.");
+        }
+        r.setEstado(EstadoReserva.Finalizada);
+    }
+      
 }
