@@ -120,4 +120,21 @@ public class GestorHotel {
         }
         return false;
     }
+    //--------------------------PARTE DE DARIO------------------------------//
+    public synchronized void RegistrarReserva(Reserva r){
+        if (buscarReserva(r.getCodigo())!= null){
+            throw new IllegalArgumentException("Ya existe una reserve con este codigo");
+        }
+        if(r.getFechaDeEntrada()== null || r.getFechaDeSalida() == null ||
+                !r.getFechaDeSalida().isAfter(r.getFechaDeEntrada())){
+            throw new IllegalArgumentException("Las fechas selecionas no son validas");
+        } 
+        if (r.getPersonas()<1 || r.getPersonas() > r.getHabitacion().getCapacidad() ){
+            throw new IllegalArgumentException("Capacidad de la habitacion excedida");
+        }
+        if (haySuperposicion(r.getHabitacion(),r.getFechaDeEntrada(),r.getFechaDeSalida())){
+            throw new IllegalArgumentException("Lo sentimos :( ,la habitacion esta reservada" + "en esas fechas.");
+        }
+        reservas.add(r);
+    }
 }
