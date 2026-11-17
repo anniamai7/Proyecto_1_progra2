@@ -4,6 +4,9 @@
  */
 package vista;
 
+import controlador.LoginControlador;
+import javax.swing.JLabel;
+
 /**
  *
  * @author UTN
@@ -33,8 +36,8 @@ public class frmlogin extends javax.swing.JFrame {
         txtUsuario = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtContraseña = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        txtContrasena = new javax.swing.JPasswordField();
+        btnIniciarSesion = new javax.swing.JButton();
         lblnotificacion_incorrecto = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -50,7 +53,8 @@ public class frmlogin extends javax.swing.JFrame {
 
         jLabel3.setText("Contraseña:");
 
-        jButton1.setText("Iniciar Sesión");
+        btnIniciarSesion.setText("Iniciar Sesión");
+        btnIniciarSesion.addActionListener(this::btnIniciarSesionActionPerformed);
 
         lblnotificacion_incorrecto.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblnotificacion_incorrecto.setText("Usuario o contraseña incorrectas.");
@@ -69,13 +73,13 @@ public class frmlogin extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
+                            .addComponent(btnIniciarSesion)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(txtUsuario)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(62, 62, 62))
-                                .addComponent(txtContraseña, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)))))
+                                .addComponent(txtContrasena, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)))))
                 .addContainerGap(34, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -91,9 +95,9 @@ public class frmlogin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
-                    .addComponent(txtContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
-                .addComponent(jButton1)
+                .addComponent(btnIniciarSesion)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(lblnotificacion_incorrecto)
                 .addGap(42, 42, 42))
@@ -101,6 +105,12 @@ public class frmlogin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
+        String usuario = txtUsuario.getText().trim();
+        String password = new String(txtContrasena.getPassword()).trim();
+        LoginControlador.validarAcceso(this, usuario, password);
+    }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -127,13 +137,19 @@ public class frmlogin extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new frmlogin().setVisible(true));
     }
 
+    public JLabel getLblnotificacion_incorrecto() {
+        return lblnotificacion_incorrecto;
+    }
+    
+    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnIniciarSesion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel lblnotificacion_incorrecto;
-    private javax.swing.JPasswordField txtContraseña;
+    public javax.swing.JLabel lblnotificacion_incorrecto;
+    private javax.swing.JPasswordField txtContrasena;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }
