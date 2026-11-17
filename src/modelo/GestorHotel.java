@@ -17,10 +17,16 @@ public class GestorHotel {
     private List<huesped> huespedes;
     private String usuarioActivo;
     
+    //-----------PARTE DE DARIO----------------------//
+    private List<Reserva> reservas;
+    
     private GestorHotel(){
         this.huespedes = new ArrayList<>();
         this.habitaciones = new ArrayList<>();
         this.usuarioActivo = null;
+        
+        //--------PARTE DE DARIO------------------//
+        this.reservas = new ArrayList<>();
     }
     
     public static synchronized GestorHotel getInstancia(){
