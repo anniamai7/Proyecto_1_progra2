@@ -151,5 +151,28 @@ public class GestorHotel {
         }
         r.setEstado(EstadoReserva.Finalizada);
     }
-      
+      //-----------------------PARTE DE DARIO--------------------------------//
+      public synchronized List<Reserva> simularVencimientos(
+      LocalDate fechaReferencia ){
+          List<Reserva> resultado = new ArrayList<>();
+          for (Reserva r : reservas){
+              if (r.getEstado() == EstadoReserva.Confirmada && r.getFechaDeEntrada()
+                      .isBefore(fechaReferencia)){
+                  resultado.add(r);
+              }
+          }
+          return resultado;
+      }
+      public long calcularIngresosRecursivos(int indice){
+       List<Reserva> copia = getReservas();
+       return sumarIngresos(copia, indice);
+      }
+      public long sumarIngresos(List<Reserva> lista, int indice){
+          if (indice >= lista.size()){
+              return 0;
+          }
+          Reserva r = lista.get(indice);
+          long monto = r.getEstado() == EstadoReserva.Finalizada ? r.getImporte():0;
+          return monto + sumarIngresos(lista, indice +1);      
+    }
 }
