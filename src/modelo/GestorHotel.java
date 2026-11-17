@@ -89,4 +89,35 @@ public class GestorHotel {
     
     return cuenta + contarRecursivo(lista, fecha, index + 1);
 }
+    //--------------------------PARTE DE DARIO------------------------------//
+    public synchronized List<Reserva> getReservas(){
+        return new ArrayList<>(reservas);
+        
+    }
+    public synchronized Reserva buscarReserva(String codigo){
+        for (Reserva r : reservas ){
+            if (r.getCodigo().equalsIgnoreCase(codigo)){
+                return r;
+            }
+        }
+        return null;
+    }
+    public synchronized boolean haySuperposicion( habitacion habitacion,
+            LocalDate entrada, LocalDate salida){
+        for (Reserva r : reservas ){
+            if (r.getHabitacion().getNumero() != habitacion.getNumero()){
+                continue;
+            }
+            if (r.getEstado()==EstadoReserva.Vencida || 
+                    r.getEstado()== EstadoReserva.Finalizada){
+                continue;
+            }
+            boolean seCruzan = entrada.isBefore(r.getFechaDeSalida()) &&
+                    salida.isAfter(r.getFechaDeEntrada());
+            if (seCruzan) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
