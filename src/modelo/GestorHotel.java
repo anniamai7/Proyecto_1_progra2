@@ -6,6 +6,7 @@ package modelo;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 
 /**
  *
@@ -16,6 +17,7 @@ public class GestorHotel {
     private List<habitacion> habitaciones;
     private List<huesped> huespedes;
     private String usuarioActivo;
+    private int siguienteReserva =1;
     
     //-----------PARTE DE DARIO----------------------//
     private List<Reserva> reservas;
@@ -124,22 +126,46 @@ public class GestorHotel {
         return false;
     }
     //--------------------------PARTE DE DARIO------------------------------//
-    public synchronized void RegistrarReserva(Reserva r){
-        if (buscarReserva(r.getCodigo())!= null){
-            throw new IllegalArgumentException("Ya existe una reserve con este codigo");
-        }
-        if(r.getFechaDeEntrada()== null || r.getFechaDeSalida() == null ||
-                !r.getFechaDeSalida().isAfter(r.getFechaDeEntrada())){
-            throw new IllegalArgumentException("Las fechas selecionas no son validas");
-        } 
-        if (r.getPersonas()<1 || r.getPersonas() > r.getHabitacion().getCapacidad() ){
-            throw new IllegalArgumentException("Capacidad de la habitacion excedida");
-        }
-        if (haySuperposicion(r.getHabitacion(),r.getFechaDeEntrada(),r.getFechaDeSalida())){
-            throw new IllegalArgumentException("Lo sentimos :( ,la habitacion esta reservada" + "en esas fechas.");
-        }
-        reservas.add(r);
+    public synchronized Reserva registrarReserva(huesped cliente,habitacion cuarto,
+            int personas,LocalDate entrada,LocalDate salida) {
+    if (cliente == null || cuarto == null) {
+        throw new IllegalArgumentException("Seleccione huésped y habitación");
     }
+    if (!huespedes.contains(cliente) ||!habitaciones.contains(cuarto)) {
+        throw new IllegalArgumentException("El huésped o la habitación no están registrados");
+    }
+    if (usuarioActivo == null) {
+        throw new IllegalArgumentException("No existe una sesión activa");
+    }
+    if (entrada == null || salida == null) {
+        throw new IllegalArgumentException("Seleccione ambas fechas");
+    }
+    if (entrada.isBefore(LocalDate.now())) {
+        throw new IllegalArgumentException("La entrada no puede ser anterior a hoy");
+    }
+    if (!salida.isAfter(entrada)) {
+        throw new IllegalArgumentException("La salida debe ser posterior a la entrada");
+    }
+    if (personas <= 0 || personas > cuarto.getCapacidad()) {
+        throw new IllegalArgumentException("Cantidad de personas no permitida");
+    }
+    if (haySuperposicion(cuarto, entrada, salida)) {
+        throw new IllegalArgumentException("La habitación está reservada en ese período");
+    }
+    long noches = ChronoUnit.DAYS.between(entrada, salida);
+
+    long importe = Math.multiplyExact(noches, cuarto.getTarifaPorNoche());
+
+    String codigo = String.format("R%03d", siguienteReserva);
+
+    Reserva nueva = new Reserva(codigo,cliente,cuarto,personas,entrada,salida,
+            noches,importe,EstadoReserva.Confirmada,usuarioActivo);
+
+    reservas.add(nueva);
+    siguienteReserva++;
+
+    return nueva;
+}
         public synchronized void realizarCheckIn(String codigo){
         Reserva r = buscarReserva(codigo);
         if (r == null || r.getEstado() != EstadoReserva.Confirmada){
