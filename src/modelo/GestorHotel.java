@@ -83,7 +83,7 @@ public class GestorHotel {
     int cuenta = 0;
     habitacion h = lista.get(index);
     
-    if (h.isDisponible(fecha)) { 
+    if (h.isDisponible(fecha) && !haySuperposicion(h,fecha,fecha.plusDays(cuenta))) { 
         cuenta = 1;
     }
     
@@ -174,5 +174,14 @@ public class GestorHotel {
           Reserva r = lista.get(indice);
           long monto = r.getEstado() == EstadoReserva.Finalizada ? r.getImporte():0;
           return monto + sumarIngresos(lista, indice +1);      
+    }
+      //-----------------------PARTE DE DARIO--------------------------------//
+      public synchronized void actualizarVencimientos( LocalDate fechaActual){
+          for(Reserva r : reservas){
+              if (r.getEstado() == EstadoReserva.Confirmada &&
+                      r.getFechaDeEntrada().isBefore(fechaActual)){
+              r.setEstado(EstadoReserva.Vencida);
+          }
+        }
     }
 }
