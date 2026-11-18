@@ -172,8 +172,11 @@ public class GestorHotel {
               return 0;
           }
           Reserva r = lista.get(indice);
-          long monto = r.getEstado() == EstadoReserva.Finalizada ? r.getImporte():0;
-          return monto + sumarIngresos(lista, indice +1);      
+          long monto =0;
+          if(r.getEstado()== EstadoReserva.Confirmada){
+              monto = r.getImporte();
+          }
+          return monto + sumarIngresos(lista,indice +1 );
     }
       //-----------------------PARTE DE DARIO--------------------------------//
       public synchronized void actualizarVencimientos( LocalDate fechaActual){
