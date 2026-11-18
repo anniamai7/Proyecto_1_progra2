@@ -19,6 +19,7 @@ import com.toedter.calendar.JDateChooser;
 import modelo.Reserva;
 import modelo.huesped;
 import modelo.habitacion;
+import modelo.EstadoReserva;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -49,7 +50,7 @@ private final ControladorSupervisor supervisorControlador =
 
 private final GestorHotel gestor =
         GestorHotel.getInstancia();
-
+private Reserva reservaSeleccionada=null;
     /**
      * Creates new form frmHotel
      */
@@ -61,6 +62,7 @@ private final GestorHotel gestor =
     cargarHuespedesReserva();
     cargarHabitacionesReserva();
     actualizarTablaReservas();
+    limpiarDatosCheck();
     
     }
     public void cargarHuespedesReserva(){
@@ -98,6 +100,39 @@ private final GestorHotel gestor =
 
     TblReservas.setModel(modelo);
 }
+        private void limpiarDatosCheck() {
+
+    reservaSeleccionada = null;
+
+    LblCodigoCheck.setText("-");
+    LblHuespedCheck.setText("-");
+    LblHabitacionCheck.setText("-");
+    LblFechaEntradaCheck.setText("-");
+    LblfechaSalidaCheck.setText("-");
+    LblEstadoCheck.setText("-");
+    LblImporteCheck.setText("-");
+
+    BtnCheckIn.setEnabled(false);
+    BtnCheckOut.setEnabled(false);
+}
+      private void mostrarReserva(Reserva reserva) {
+    if (reserva == null) {
+        limpiarDatosCheck();
+        return;
+    }
+
+    reservaSeleccionada = reserva;
+    LblCodigoCheck.setText(reserva.getCodigo());
+    LblHuespedCheck.setText(reserva.getHuesped().getNombreCompleto());
+    LblHabitacionCheck.setText(String.valueOf(reserva.getHabitacion().getNumero()));
+    LblFechaEntradaCheck.setText(reserva.getFechaDeEntrada().toString());
+    LblfechaSalidaCheck.setText(reserva.getFechaDeSalida().toString());
+    LblEstadoCheck.setText(reserva.getEstado().toString());
+    LblImporteCheck.setText("₡" + reserva.getImporte());
+    BtnCheckIn.setEnabled(reserva.getEstado() == EstadoReserva.Confirmada);
+    BtnCheckOut.setEnabled(reserva.getEstado() == EstadoReserva.Hospedado);
+}  
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -142,6 +177,32 @@ private final GestorHotel gestor =
         lblTotalDisponibles = new javax.swing.JLabel();
         lblListaHab = new javax.swing.JLabel();
         PanelCheck = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        TxtBuscarReserva = new javax.swing.JTextField();
+        BtnBuscarReserva = new javax.swing.JButton();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        LblCodigoCheck = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        LblHabitacionCheck = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        LblFechaEntradaCheck = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        LblNoches = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        LblHuespedCheck = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        LblPersonasCheck = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        LblfechaSalidaCheck = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        LblImporteCheck = new javax.swing.JLabel();
+        LblEstadoCheck = new javax.swing.JLabel();
+        BtnCheckIn = new javax.swing.JButton();
+        BtnCheckOut = new javax.swing.JButton();
         PanelSimulacion = new javax.swing.JPanel();
         PanelReserva = new javax.swing.JPanel();
         TxtCodigoReserva = new javax.swing.JTextField();
@@ -391,15 +452,169 @@ private final GestorHotel gestor =
 
         jTabbedPane1.addTab("Disponibilidad", panelDisponibilidad);
 
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel16.setText("Check-in/out");
+
+        jLabel17.setText("Buscar reserva");
+
+        jLabel18.setText("Codigo de reserva");
+
+        TxtBuscarReserva.addActionListener(this::TxtBuscarReservaActionPerformed);
+
+        BtnBuscarReserva.setText("Buscar");
+        BtnBuscarReserva.addActionListener(this::BtnBuscarReservaActionPerformed);
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel19.setText("Detalles de la reserva");
+
+        jLabel20.setText("Codigo");
+
+        jLabel21.setText("Habitacion");
+
+        jLabel22.setText("Fecha de entrada");
+
+        jLabel24.setText("Noches");
+
+        jLabel25.setText("Huesped");
+
+        jLabel26.setText("Personas");
+
+        jLabel27.setText("Fecha de salida");
+
+        jLabel23.setText("Importe");
+
+        LblEstadoCheck.setText("jLabel28");
+
+        BtnCheckIn.setText("->] Realizar Check-In");
+        BtnCheckIn.setEnabled(false);
+        BtnCheckIn.addActionListener(this::BtnCheckInActionPerformed);
+
+        BtnCheckOut.setText("[-> Realizar el Check-Out");
+        BtnCheckOut.setEnabled(false);
+        BtnCheckOut.addActionListener(this::BtnCheckOutActionPerformed);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addComponent(BtnCheckIn)
+                        .addGap(256, 256, 256)
+                        .addComponent(BtnCheckOut))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel16))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(101, 101, 101)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel17)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(TxtBuscarReserva, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(BtnBuscarReserva)
+                                    .addComponent(LblEstadoCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel21)
+                            .addComponent(jLabel22)
+                            .addComponent(LblHabitacionCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(LblCodigoCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LblFechaEntradaCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(LblNoches, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(117, 117, 117)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel26)
+                            .addComponent(jLabel25)
+                            .addComponent(LblPersonasCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(LblHuespedCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel27)
+                            .addComponent(LblfechaSalidaCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LblImporteCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))))
+                .addContainerGap(216, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TxtBuscarReserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtnBuscarReserva))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(LblEstadoCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel25))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(LblCodigoCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(LblHuespedCheck))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel21)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(LblHabitacionCheck)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(LblFechaEntradaCheck)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel24)
+                            .addComponent(jLabel23)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel26)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(LblPersonasCheck)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel27)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(LblfechaSalidaCheck)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LblNoches)
+                    .addComponent(LblImporteCheck))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BtnCheckIn)
+                    .addComponent(BtnCheckOut))
+                .addContainerGap(83, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout PanelCheckLayout = new javax.swing.GroupLayout(PanelCheck);
         PanelCheck.setLayout(PanelCheckLayout);
         PanelCheckLayout.setHorizontalGroup(
             PanelCheckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 859, Short.MAX_VALUE)
+            .addGroup(PanelCheckLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         PanelCheckLayout.setVerticalGroup(
             PanelCheckLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 436, Short.MAX_VALUE)
+            .addGroup(PanelCheckLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Check-In/Out", PanelCheck);
@@ -668,6 +883,64 @@ if(indiceHuesped < 0 || indiceHabitacion <0) {
     
     }//GEN-LAST:event_BtnActualizarReservaActionPerformed
 
+    private void BtnCheckOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCheckOutActionPerformed
+try {
+    if (reservaSeleccionada == null) {JOptionPane.showMessageDialog(this,"Primero debe buscar una reserva");
+        return;
+    }
+    String codigo = reservaSeleccionada.getCodigo();
+    checkControlador.hacerCheckOut(codigo);
+
+    JOptionPane.showMessageDialog(this,"Check-out realizado correctamente");
+
+    Reserva actualizada = checkControlador.buscar(codigo);
+
+    mostrarReserva(actualizada);
+    actualizarTablaReservas();
+    
+} catch (IllegalArgumentException ex) {
+    JOptionPane.showMessageDialog(this,ex.getMessage(),"Error de Check-out",JOptionPane.ERROR_MESSAGE);
+}
+    }//GEN-LAST:event_BtnCheckOutActionPerformed
+
+    private void BtnBuscarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBuscarReservaActionPerformed
+        try {
+    limpiarDatosCheck();
+    String codigo = TxtBuscarReserva.getText().trim();
+    if (codigo.isEmpty()) {JOptionPane.showMessageDialog(this,"Ingrese un código de reserva");
+        return;
+    }
+    Reserva reserva = checkControlador.buscar(codigo);
+    mostrarReserva(reserva);
+    JOptionPane.showMessageDialog(this,"Reserva encontrada correctamente");
+
+} catch (IllegalArgumentException ex) {
+    JOptionPane.showMessageDialog(this,ex.getMessage(),"Error de búsqueda",JOptionPane.ERROR_MESSAGE);
+}
+
+    }//GEN-LAST:event_BtnBuscarReservaActionPerformed
+
+    private void BtnCheckInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCheckInActionPerformed
+try {
+    if (reservaSeleccionada == null) {JOptionPane.showMessageDialog(
+            this,"Primero debe buscar una reserva");
+        return;
+    }
+    String codigo = reservaSeleccionada.getCodigo();
+    checkControlador.hacerCheckIn(codigo);JOptionPane.showMessageDialog(
+            this,"Check-in realizado correctamente");
+    Reserva actualizada =checkControlador.buscar(codigo);
+    mostrarReserva(actualizada);
+    actualizarTablaReservas();
+} catch (IllegalArgumentException ex) {JOptionPane.showMessageDialog(this,ex.getMessage(),"Error de Check-in",JOptionPane.ERROR_MESSAGE);
+}
+    
+    }//GEN-LAST:event_BtnCheckInActionPerformed
+
+    private void TxtBuscarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtBuscarReservaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtBuscarReservaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -695,18 +968,31 @@ if(indiceHuesped < 0 || indiceHabitacion <0) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnActualizarReserva;
+    private javax.swing.JButton BtnBuscarReserva;
+    private javax.swing.JButton BtnCheckIn;
+    private javax.swing.JButton BtnCheckOut;
     private javax.swing.JButton BtnRegistarReserva;
     private javax.swing.JComboBox<String> CmbHabitacionesReserva;
     private javax.swing.JComboBox<String> CmbHuespedReserva;
     private com.toedter.calendar.JDateChooser DcEntrada;
     private com.toedter.calendar.JDateChooser DcSalida;
+    private javax.swing.JLabel LblCodigoCheck;
+    private javax.swing.JLabel LblEstadoCheck;
+    private javax.swing.JLabel LblFechaEntradaCheck;
+    private javax.swing.JLabel LblHabitacionCheck;
     private javax.swing.JLabel LblHuesped;
+    private javax.swing.JLabel LblHuespedCheck;
+    private javax.swing.JLabel LblImporteCheck;
+    private javax.swing.JLabel LblNoches;
+    private javax.swing.JLabel LblPersonasCheck;
     private javax.swing.JLabel LblRegistroReservas;
+    private javax.swing.JLabel LblfechaSalidaCheck;
     private javax.swing.JPanel PanelCheck;
     private javax.swing.JPanel PanelReserva;
     private javax.swing.JPanel PanelSimulacion;
     private javax.swing.JSpinner SpnPersonas;
     private javax.swing.JTable TblReservas;
+    private javax.swing.JTextField TxtBuscarReserva;
     private javax.swing.JTextField TxtCodigoReserva;
     private javax.swing.JButton btnCambiarUsuario;
     private javax.swing.JButton btnConsultar;
@@ -722,7 +1008,19 @@ if(indiceHuesped < 0 || indiceHabitacion <0) {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -730,6 +1028,7 @@ if(indiceHuesped < 0 || indiceHabitacion <0) {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
