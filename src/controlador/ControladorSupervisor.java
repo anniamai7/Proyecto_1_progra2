@@ -1,34 +1,58 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controlador;
 
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import modelo.ActualizadorIndicadores;
 import modelo.GestorHotel;
 import modelo.SupervisorReservas;
-import javax.swing.JLabel;
-/**
- *
- * @author Dario R
- */
+
 public class ControladorSupervisor {
     private final GestorHotel gestor = GestorHotel.getInstancia();
-    
-    public void ejcutar(JLabel indicador){
-        
-    Thread supervisor = new Thread( new SupervisorReservas(gestor),"supervisor-reservas");
-    
-    Thread indicadores = new Thread (() -> {
-        try {
-        supervisor.join();
-        new ActualizadorIndicadores(gestor, indicador).run();
-    } catch (InterruptedException ex){
-        Thread.currentThread().interrupt();
+    private static boolean enEjecucion = false;
+
+    public static synchronized boolean estaEnEjecucion() {
+        return enEjecucion;
     }
-    },"actualizador-indicaciones");
-    supervisor.start();
-    indicadores.start();
+
+    private static synchronized boolean iniciar() {
+        if (enEjecucion) return false;
+        enEjecucion = true;
+        return true;
+    }
+
+    private static synchronized void terminar() {
+        enEjecucion = false;
+    }
+
+    public boolean ejecutar(JTextArea indicador, Runnable actualizarVista) {
+        if (!iniciar()) return false;
+        Thread supervisor = new Thread(new SupervisorReservas(gestor), "SupervisorReservas");
+        Thread indicadores = new Thread(new ActualizadorIndicadores(gestor, indicador), "ActualizadorIndicadores");
+        supervisor.start();
+        indicadores.start();
+        new Thread(() -> {
+            boolean interrumpido = false;
+            while (supervisor.isAlive() || indicadores.isAlive()) {
+                try {
+                    supervisor.join();
+                    indicadores.join();
+                } catch (InterruptedException ex) {
+                    interrumpido = true;
+                    supervisor.interrupt();
+                    indicadores.interrupt();
+                }
+            }
+            String texto = ActualizadorIndicadores.textoIndicadores(gestor.obtenerIndicadores());
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    indicador.setText(texto);
+                    actualizarVista.run();
+                } finally {
+                    terminar();
+                }
+            });
+            if (interrumpido) Thread.currentThread().interrupt();
+        }, "Coordinador").start();
+        return true;
     }
 }
-

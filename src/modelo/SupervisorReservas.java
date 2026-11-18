@@ -1,21 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
+
 import java.time.LocalDate;
-/**
- *
- * @author Dario R
- */
+
 public class SupervisorReservas implements Runnable {
     private final GestorHotel gestor;
- 
+
     public SupervisorReservas(GestorHotel gestor) {
         this.gestor = gestor;
     }
+
     @Override
-    public void run(){
-        gestor.actualizarVencimientos(LocalDate.now());
+    public void run() {
+        String nombre = Thread.currentThread().getName();
+        System.out.println(nombre + ": inicio");
+        try {
+            for (int ciclo = 1; ciclo <= 5; ciclo++) {
+                gestor.actualizarVencimientos(LocalDate.now());
+                System.out.println(nombre + ": ciclo " + ciclo);
+                if (ciclo < 5) Thread.sleep(1000);
+            }
+            System.out.println(nombre + ": finalizó");
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            System.out.println(nombre + ": interrumpido");
+        }
     }
 }

@@ -63,7 +63,14 @@ private Reserva reservaSeleccionada=null;
     cargarHabitacionesReserva();
     actualizarTablaReservas();
     limpiarDatosCheck();
-    
+    huespedControlador.actualizarTablaHuespedes(tableUsuarios);
+    HabitacionControlador.actualizarTablaHabitaciones(tableHabitaciones);
+    TxtCodigoReserva.setEditable(false);
+    TxtCodigoReserva.setText("Automático");
+    jTextArea1.setEditable(false);
+    jTextArea2.setEditable(false);
+    jTextArea1.setText(modelo.ActualizadorIndicadores.textoIndicadores(gestor.obtenerIndicadores()));
+    jTextArea2.setText("Ingrese una fecha futura (AAAA-MM-DD).");
     }
     public void cargarHuespedesReserva(){
         CmbHuespedReserva.removeAllItems();
@@ -81,7 +88,7 @@ private Reserva reservaSeleccionada=null;
         public void actualizarTablaReservas(){
              DefaultTableModel modelo = new DefaultTableModel(
              new Object[]{"Código","Huésped","Habitación","Personas","Entrada",
-            "Salida","Noches","Importe","Estado"
+            "Salida","Noches","Importe","Estado","Recepcionista","Salida real"
               },0){
                   
         @Override
@@ -94,7 +101,8 @@ private Reserva reservaSeleccionada=null;
 
         modelo.addRow(new Object[] {r.getCodigo(),r.getHuesped().getNombreCompleto(),
             r.getHabitacion().getNumero(),r.getPersonas(),r.getFechaDeEntrada(),
-            r.getFechaDeSalida(),r.getNoches(),r.getImporte(),r.getEstado()
+            r.getFechaDeSalida(),r.getNoches(),r.getImporte(),r.getEstado(),
+            r.getRecepcion(),r.getFechaSalidaReal()
         });
     }
 
@@ -111,6 +119,8 @@ private Reserva reservaSeleccionada=null;
     LblfechaSalidaCheck.setText("-");
     LblEstadoCheck.setText("-");
     LblImporteCheck.setText("-");
+    LblPersonasCheck.setText("-");
+    LblNoches.setText("-");
 
     BtnCheckIn.setEnabled(false);
     BtnCheckOut.setEnabled(false);
@@ -129,6 +139,8 @@ private Reserva reservaSeleccionada=null;
     LblfechaSalidaCheck.setText(reserva.getFechaDeSalida().toString());
     LblEstadoCheck.setText(reserva.getEstado().toString());
     LblImporteCheck.setText("₡" + reserva.getImporte());
+    LblPersonasCheck.setText(String.valueOf(reserva.getPersonas()));
+    LblNoches.setText(String.valueOf(reserva.getNoches()));
     BtnCheckIn.setEnabled(reserva.getEstado() == EstadoReserva.Confirmada);
     BtnCheckOut.setEnabled(reserva.getEstado() == EstadoReserva.Hospedado);
 }  
@@ -175,7 +187,6 @@ private Reserva reservaSeleccionada=null;
         jLabel12 = new javax.swing.JLabel();
         btnConsultar = new javax.swing.JButton();
         lblTotalDisponibles = new javax.swing.JLabel();
-        lblListaHab = new javax.swing.JLabel();
         PanelCheck = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
@@ -204,6 +215,13 @@ private Reserva reservaSeleccionada=null;
         BtnCheckIn = new javax.swing.JButton();
         BtnCheckOut = new javax.swing.JButton();
         PanelSimulacion = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
         PanelReserva = new javax.swing.JPanel();
         TxtCodigoReserva = new javax.swing.JTextField();
         LblRegistroReservas = new javax.swing.JLabel();
@@ -408,8 +426,6 @@ private Reserva reservaSeleccionada=null;
 
         lblTotalDisponibles.setText("Números de habitaciones disponibles:");
 
-        lblListaHab.setText("Habitaciones: ");
-
         javax.swing.GroupLayout panelDisponibilidadLayout = new javax.swing.GroupLayout(panelDisponibilidad);
         panelDisponibilidad.setLayout(panelDisponibilidadLayout);
         panelDisponibilidadLayout.setHorizontalGroup(
@@ -428,9 +444,7 @@ private Reserva reservaSeleccionada=null;
                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelDisponibilidadLayout.createSequentialGroup()
                         .addGap(44, 44, 44)
-                        .addGroup(panelDisponibilidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblListaHab, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblTotalDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(lblTotalDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(308, Short.MAX_VALUE))
         );
         panelDisponibilidadLayout.setVerticalGroup(
@@ -445,9 +459,7 @@ private Reserva reservaSeleccionada=null;
                 .addComponent(btnConsultar)
                 .addGap(18, 18, 18)
                 .addComponent(lblTotalDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblListaHab, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addContainerGap(268, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Disponibilidad", panelDisponibilidad);
@@ -473,17 +485,15 @@ private Reserva reservaSeleccionada=null;
 
         jLabel22.setText("Fecha de entrada");
 
-        jLabel24.setText("Noches");
+        jLabel24.setText("Cantidad de números:");
 
         jLabel25.setText("Huesped");
 
-        jLabel26.setText("Personas");
+        jLabel26.setText("Cantidad de personas:");
 
         jLabel27.setText("Fecha de salida");
 
         jLabel23.setText("Importe");
-
-        LblEstadoCheck.setText("jLabel28");
 
         BtnCheckIn.setText("->] Realizar Check-In");
         BtnCheckIn.setEnabled(false);
@@ -527,9 +537,9 @@ private Reserva reservaSeleccionada=null;
                             .addComponent(jLabel22)
                             .addComponent(LblHabitacionCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(LblCodigoCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(LblFechaEntradaCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(LblNoches, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(LblNoches, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(117, 117, 117)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel26)
@@ -540,7 +550,7 @@ private Reserva reservaSeleccionada=null;
                             .addComponent(LblfechaSalidaCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(LblImporteCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))))
-                .addContainerGap(216, Short.MAX_VALUE))
+                .addContainerGap(217, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -619,15 +629,60 @@ private Reserva reservaSeleccionada=null;
 
         jTabbedPane1.addTab("Check-In/Out", PanelCheck);
 
+        jButton1.setText("Ejecutar supervisión");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
+
+        jButton2.setText("Simular vencimientos");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
+
+        jTextField1.setText("AAAA-MM-DD");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane4.setViewportView(jTextArea1);
+
+        jTextArea2.setColumns(20);
+        jTextArea2.setRows(5);
+        jScrollPane5.setViewportView(jTextArea2);
+
         javax.swing.GroupLayout PanelSimulacionLayout = new javax.swing.GroupLayout(PanelSimulacion);
         PanelSimulacion.setLayout(PanelSimulacionLayout);
         PanelSimulacionLayout.setHorizontalGroup(
             PanelSimulacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 859, Short.MAX_VALUE)
+            .addGroup(PanelSimulacionLayout.createSequentialGroup()
+                .addGroup(PanelSimulacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelSimulacionLayout.createSequentialGroup()
+                        .addGap(122, 122, 122)
+                        .addComponent(jButton1))
+                    .addGroup(PanelSimulacionLayout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         PanelSimulacionLayout.setVerticalGroup(
             PanelSimulacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 436, Short.MAX_VALUE)
+            .addGroup(PanelSimulacionLayout.createSequentialGroup()
+                .addGap(87, 87, 87)
+                .addGroup(PanelSimulacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(PanelSimulacionLayout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGroup(PanelSimulacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PanelSimulacionLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(PanelSimulacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButton2)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(PanelSimulacionLayout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(204, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Simulacion", PanelSimulacion);
@@ -638,8 +693,6 @@ private Reserva reservaSeleccionada=null;
         jLabel9.setText("Codigo de reserva");
 
         LblHuesped.setText("Huesped");
-
-        CmbHuespedReserva.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel10.setText("Personas");
 
@@ -802,6 +855,7 @@ private Reserva reservaSeleccionada=null;
         txtTel.getText().trim(),
         txtCorreo.getText().trim(),
         tableUsuarios);
+        cargarHuespedesReserva();
     }//GEN-LAST:event_btnRegistrarHuespActionPerformed
 
     private void btnRegistrar_habActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrar_habActionPerformed
@@ -809,6 +863,7 @@ private Reserva reservaSeleccionada=null;
         txtNumHab.getText().trim(),
         cmbTipo.getSelectedItem().toString(),
         tableHabitaciones);
+        cargarHabitacionesReserva();
     }//GEN-LAST:event_btnRegistrar_habActionPerformed
 
     private void txtNumHabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumHabActionPerformed
@@ -940,6 +995,34 @@ try {
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtBuscarReservaActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        boolean iniciado = supervisorControlador.ejecutar(jTextArea1, () -> {
+            actualizarTablaReservas();
+            if (reservaSeleccionada != null) mostrarReserva(gestor.buscarReserva(reservaSeleccionada.getCodigo()));
+            JOptionPane.showMessageDialog(this, "Procesos de supervisión finalizados.");
+        });
+        if (!iniciado) JOptionPane.showMessageDialog(this, "Los procesos ya están en ejecución.");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            LocalDate fecha = LocalDate.parse(jTextField1.getText().trim());
+            if (!fecha.isAfter(LocalDate.now())) throw new IllegalArgumentException("Ingrese una fecha futura.");
+            List<Reserva> resultado = simuladorControlador.simular(fecha);
+            String texto = "Simulación para " + fecha + "\n";
+            if (resultado.isEmpty()) texto += "No hay reservas por vencer.";
+            for (Reserva r : resultado) {
+                texto += r.getCodigo() + " - " + r.getHuesped().getNombreCompleto()
+                        + " - Entrada: " + r.getFechaDeEntrada() + "\n";
+            }
+            jTextArea2.setText(texto + "\nLa simulación no modifica las reservas.");
+        } catch (java.time.format.DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese una fecha válida: AAAA-MM-DD.");
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1000,6 +1083,8 @@ try {
     private javax.swing.JButton btnRegistrarHuesp;
     private javax.swing.JButton btnRegistrar_hab;
     private javax.swing.JComboBox<String> cmbTipo;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1031,8 +1116,12 @@ try {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JLabel lblListaHab;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblTotalDisponibles;
     private javax.swing.JLabel lblrecepcionista;
     private javax.swing.JPanel panelDisponibilidad;
