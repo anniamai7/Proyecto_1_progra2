@@ -175,11 +175,20 @@ public class GestorHotel {
     }
       public synchronized void realizarCheckOut(String codigo){
         Reserva r = buscarReserva(codigo);
-        if (r == null || r.getEstado() != EstadoReserva.Hospedado){
-            throw new IllegalArgumentException("No se puede realizar el check-out.");
-        }
-        r.setEstado(EstadoReserva.Finalizada);
+        if (r == null) {
+        throw new IllegalArgumentException("La reserva no existe");
     }
+
+    if (r.getEstado() != EstadoReserva.Confirmada) {
+        throw new IllegalArgumentException("La reserva no está confirmada");
+    }
+
+    if (!r.getFechaDeEntrada().equals(LocalDate.now())) {
+        throw new IllegalArgumentException("El check-in solo puede realizarse "
+                + "en la fecha de entrada programada");
+    }
+    r.setEstado(EstadoReserva.Hospedado);
+   }
       //-----------------------PARTE DE DARIO--------------------------------//
       public synchronized List<Reserva> simularVencimientos(
       LocalDate fechaReferencia ){
