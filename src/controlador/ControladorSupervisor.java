@@ -4,7 +4,9 @@
  */
 package controlador;
 
-import modelo.*;
+import modelo.ActualizadorIndicadores;
+import modelo.GestorHotel;
+import modelo.SupervisorReservas;
 import javax.swing.JLabel;
 /**
  *
@@ -13,18 +15,18 @@ import javax.swing.JLabel;
 public class ControladorSupervisor {
     private final GestorHotel gestor = GestorHotel.getInstancia();
     
-    public void ejcutar(JLabel actualizarVista){
+    public void ejcutar(JLabel indicador){
         
-    Thread supervisor = new Thread( new SupervisorReservas(gestor));
+    Thread supervisor = new Thread( new SupervisorReservas(gestor),"supervisor-reservas");
     
     Thread indicadores = new Thread (() -> {
         try {
         supervisor.join();
-        new ActualizadorIndicadores(gestor, actualizarVista).run();
+        new ActualizadorIndicadores(gestor, indicador).run();
     } catch (InterruptedException ex){
         Thread.currentThread().interrupt();
     }
-    });
+    },"actualizador-indicaciones");
     supervisor.start();
     indicadores.start();
     }
