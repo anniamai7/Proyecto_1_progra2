@@ -860,8 +860,7 @@ if(indiceHuesped < 0 || indiceHabitacion <0) {
 
     int personas = (Integer) SpnPersonas.getValue();
 
-    Reserva nueva = reservaControlador.registrar(TxtCodigoReserva.getText().trim(),
-            cliente,cuarto,personas,entrada,salida);
+    Reserva nueva = reservaControlador.registrar(cliente,cuarto,personas,entrada,salida);
 
     JOptionPane.showMessageDialog(
             this,"Reserva registrada correctamente\n"+ "Código: " + nueva.getCodigo()
