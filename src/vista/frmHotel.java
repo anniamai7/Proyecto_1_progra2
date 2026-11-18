@@ -14,6 +14,7 @@ import controlador.ReservaControlador;
 import controlador.CheckControlador;
 import controlador.SimuladorControlador;
 import controlador.ControladorSupervisor;
+import com.toedter.calendar.JDateChooser;
 
 import modelo.Reserva;
 import modelo.huesped;
