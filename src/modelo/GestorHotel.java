@@ -72,22 +72,25 @@ public class GestorHotel {
     }
     
     public int contarHabitacionesDisponibles(LocalDate fecha) {
+        if (fecha == null ){
+            throw new IllegalArgumentException("Seleccione una fecha válida");
+        }
         return contarRecursivo(habitaciones, fecha, 0);
     }
     
-    private int contarRecursivo(List<habitacion> lista, LocalDate fecha, int index) {
-    if (index >= lista.size()) {
+    private int contarRecursivo(List<habitacion> lista, LocalDate fecha, int indice) {
+    if (indice >= lista.size()) {
         return 0;
     }
     
-    int cuenta = 0;
-    habitacion h = lista.get(index);
-    
-    if (h.isDisponible(fecha) && !haySuperposicion(h,fecha,fecha.plusDays(cuenta))) { 
+    habitacion h = lista.get(indice);
+    int cuenta=0;
+     boolean ocupada = haySuperposicion(h,fecha,fecha.plusDays(1));
+    if (!ocupada) {
         cuenta = 1;
     }
     
-    return cuenta + contarRecursivo(lista, fecha, index + 1);
+    return cuenta + contarRecursivo(lista, fecha, indice + 1);
 }
     //--------------------------PARTE DE DARIO------------------------------//
     public synchronized List<Reserva> getReservas(){
