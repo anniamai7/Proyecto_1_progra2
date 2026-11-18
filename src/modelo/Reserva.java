@@ -43,11 +43,7 @@ public class Reserva {
     public String getCodigo() {
         return codigo;
     }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
+    
     public huesped getHuesped() {
         return huesped;
     }

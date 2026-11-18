@@ -868,7 +868,7 @@ if(indiceHuesped < 0 || indiceHabitacion <0) {
 
     actualizarTablaReservas();
 
-    TxtCodigoReserva.setText("");
+    TxtCodigoReserva.setText("Automatico");
 
 } catch (IllegalArgumentException | ArithmeticException ex){
     JOptionPane.showMessageDialog(this,ex.getMessage(),"Error de reserva",JOptionPane.ERROR_MESSAGE);
