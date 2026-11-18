@@ -18,6 +18,8 @@ public class LoginControlador {
         if((usuario.equals("recepcion1") && password.equals("Hotel123")) ||
                 (usuario.equals("recepcion2") && password.equals("Hotel456"))){
         GestorHotel.getInstancia().setUsuarioActivo(usuario);
+        GestorHotel.getInstancia().actualizarVencimientos(java.time.LocalDate.now());
+        JOptionPane.showMessageDialog(vistaLogin, "Revisión de vencimientos realizada correctamente.");
         frmHotel frmHotel = new frmHotel();
         frmHotel.setVisible(true);
         vistaLogin.dispose();
@@ -27,6 +29,10 @@ public class LoginControlador {
     }
     
     public static void cambiarUsuario(frmHotel hotel){
+        if (ControladorSupervisor.estaEnEjecucion()) {
+            JOptionPane.showMessageDialog(hotel, "Espere a que finalicen los procesos antes de cambiar de usuario.");
+            return;
+        }
         int confirmacion = JOptionPane.showConfirmDialog(
             hotel,
             "¿Desea cerrar la sesión actual para ingresar con otro usuario?",

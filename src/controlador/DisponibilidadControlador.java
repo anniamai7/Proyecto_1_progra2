@@ -26,6 +26,14 @@ public class DisponibilidadControlador {
             int habitacionesDisponibles = GestorHotel.getInstancia().contarHabitacionesDisponibles(fechaConsulta);
             
             lblResultadoConteo.setText("Habitaciones disponibles: " + habitacionesDisponibles);
+            String numeros = "";
+            for (modelo.habitacion h : GestorHotel.getInstancia().obtenerDisponibles(fechaConsulta)) {
+                if (!numeros.isEmpty()) numeros += ", ";
+                numeros += h.getNumero();
+            }
+            if (numeros.isEmpty()) numeros = "Ninguna";
+            JOptionPane.showMessageDialog(null, "Cantidad: " + habitacionesDisponibles
+                    + "\nHabitaciones disponibles: " + numeros);
             
         } catch (DateTimeParseException e) {
             JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Utilice el formato YYYY-MM-DD.", "Error", JOptionPane.ERROR_MESSAGE);

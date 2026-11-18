@@ -41,7 +41,7 @@ public class Reserva {
         return fechaSalidaReal;
     }
 
-    public void setFechaSalidaReal(LocalDate fechaSalidaReal) {
+    void setFechaSalidaReal(LocalDate fechaSalidaReal) {
         this.fechaSalidaReal = fechaSalidaReal;
     }
         
@@ -54,63 +54,42 @@ public class Reserva {
         return huesped;
     }
 
-    public void setHuesped(huesped huesped) {
-        this.huesped = huesped;
-    }
 
     public habitacion getHabitacion() {
         return habitacion;
     }
 
-    public void setHabitacion(habitacion habitacion) {
-        this.habitacion = habitacion;
-    }
 
     public int getPersonas() {
         return personas;
     }
 
-    public void setPersonas(int personas) {
-        this.personas = personas;
-    }
 
     public LocalDate getFechaDeEntrada() {
         return fechaDeEntrada;
     }
 
-    public void setFechaDeEntrada(LocalDate fechaDeEntrada) {
-        this.fechaDeEntrada = fechaDeEntrada;
-    }
 
     public LocalDate getFechaDeSalida() {
         return fechaDeSalida;
     }
 
-    public void setFechaDeSalida(LocalDate fechaDeSalida) {
-        this.fechaDeSalida = fechaDeSalida;
-    }
 
     public long getNoches() {
         return noches;
     }
 
-    public void setNoches(long noches) {
-        this.noches = noches;
-    }
 
     public long getImporte() {
         return importe;
     }
 
-    public void setImporte(long importe) {
-        this.importe = importe;
-    }
 
     public EstadoReserva getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoReserva estado) {
+    void setEstado(EstadoReserva estado) {
         this.estado = estado;
     }
 
@@ -118,9 +97,6 @@ public class Reserva {
         return recepcion;
     }
 
-    public void setRecepcion(String recepcion) {
-        this.recepcion = recepcion;
-    }
     
     
     

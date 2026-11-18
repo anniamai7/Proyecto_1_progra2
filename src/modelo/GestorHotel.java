@@ -37,25 +37,37 @@ public class GestorHotel {
         }return instancia;
     }
     
-    public List<huesped> getHuespedes(){
-        return huespedes;
+    public synchronized List<huesped> getHuespedes(){
+        return new ArrayList<>(huespedes);
     }
     
-    public List<habitacion> gethabitaciones(){
-        return habitaciones;
+    public synchronized List<habitacion> gethabitaciones(){
+        return new ArrayList<>(habitaciones);
     }
     
-    public String getUsuarioActivo(){
+    public synchronized String getUsuarioActivo(){
         return usuarioActivo;
     }
     
-    public void setUsuarioActivo(String usuarioActivo){
+    public synchronized void setUsuarioActivo(String usuarioActivo){
         this.usuarioActivo = usuarioActivo;
     }
     
-    public boolean agregarHuesped(huesped nuevo){
+    public synchronized boolean agregarHuesped(huesped nuevo){
+        if (nuevo == null || nuevo.getIdentificacion() == null || nuevo.getIdentificacion().trim().isEmpty()
+                || nuevo.getNombreCompleto() == null || nuevo.getNombreCompleto().trim().isEmpty()
+                || nuevo.getTelefono() == null || nuevo.getTelefono().trim().isEmpty()
+                || nuevo.getCorreo() == null || nuevo.getCorreo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Todos los campos del huésped son obligatorios.");
+        }
+        String correo = nuevo.getCorreo().trim();
+        int arroba = correo.indexOf('@');
+        if (arroba <= 0 || arroba != correo.lastIndexOf('@') || arroba == correo.length() - 1
+                || correo.indexOf('.', arroba + 1) <= arroba + 1 || correo.endsWith(".") || correo.contains(" ")) {
+            throw new IllegalArgumentException("El correo no tiene un formato válido.");
+        }
         for(huesped h : huespedes){
-            if (h.getIdentificacion().equalsIgnoreCase(nuevo.getIdentificacion())){
+            if (h.getIdentificacion().trim().equalsIgnoreCase(nuevo.getIdentificacion().trim())){
                 return false;
             }
         }
@@ -63,7 +75,8 @@ public class GestorHotel {
         return true;
     }
     
-    public boolean agregarHabitacion(habitacion  nueva){
+    public synchronized boolean agregarHabitacion(habitacion  nueva){
+        if (nueva == null) throw new IllegalArgumentException("Seleccione una habitación.");
         for (habitacion h : habitaciones){
             if (h.getNumero() == nueva.getNumero()){
                 return false;
@@ -73,7 +86,7 @@ public class GestorHotel {
         return true;
     }
     
-    public int contarHabitacionesDisponibles(LocalDate fecha) {
+    public synchronized int contarHabitacionesDisponibles(LocalDate fecha) {
         if (fecha == null ){
             throw new IllegalArgumentException("Seleccione una fecha válida");
         }
@@ -171,6 +184,9 @@ public class GestorHotel {
         if (r == null || r.getEstado() != EstadoReserva.Confirmada){
             throw new IllegalArgumentException("No se puede realizar el check-in.");
         }
+        if (!r.getFechaDeEntrada().equals(LocalDate.now())) {
+            throw new IllegalArgumentException("El check-in solo se permite en la fecha de entrada.");
+        }
         r.setEstado(EstadoReserva.Hospedado);
     }
       public synchronized void realizarCheckOut(String codigo){
@@ -198,7 +214,7 @@ public class GestorHotel {
           }
           return resultado;
       }
-      public long calcularIngresosRecursivos(int indice){
+      public synchronized long calcularIngresosRecursivos(int indice){
        List<Reserva> copia = getReservas();
        return sumarIngresos(copia, indice);
       }
@@ -222,4 +238,33 @@ public class GestorHotel {
           }
         }
     }
+    public synchronized List<habitacion> obtenerDisponibles(LocalDate fecha) {
+        if (fecha == null) throw new IllegalArgumentException("Seleccione una fecha válida");
+        List<habitacion> disponibles = new ArrayList<>();
+        for (habitacion h : habitaciones) {
+            if (!haySuperposicion(h, fecha, fecha.plusDays(1))) disponibles.add(h);
+        }
+        return disponibles;
+    }
+
+    public synchronized String[] obtenerIndicadores() {
+        int ocupadas = 0, confirmadas = 0, vencidas = 0;
+        for (habitacion h : habitaciones) {
+            for (Reserva r : reservas) {
+                if (r.getHabitacion().getNumero() == h.getNumero()
+                        && r.getEstado() == EstadoReserva.Hospedado) {
+                    ocupadas++;
+                    break;
+                }
+            }
+        }
+        for (Reserva r : reservas) {
+            if (r.getEstado() == EstadoReserva.Confirmada) confirmadas++;
+            if (r.getEstado() == EstadoReserva.Vencida) vencidas++;
+        }
+        return new String[]{String.valueOf(habitaciones.size()), String.valueOf(ocupadas),
+            String.valueOf(habitaciones.size() - ocupadas), String.valueOf(confirmadas),
+            String.valueOf(vencidas), String.valueOf(calcularIngresosRecursivos(0))};
+    }
+
 }
