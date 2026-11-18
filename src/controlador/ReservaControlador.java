@@ -14,32 +14,8 @@ import java.time.temporal.ChronoUnit;
 public class ReservaControlador {
     private final GestorHotel gestor = GestorHotel.getInstancia();
     
-    public Reserva registrar(String codigo, huesped cliente, habitacion cuarto, 
-            int personas, LocalDate Entrada, LocalDate Salida){
-    if (codigo == null || codigo.trim().isEmpty()){
-        throw new IllegalArgumentException("Ingrese un codigo de reserva");
+     public Reserva registrar(huesped cliente,habitacion cuarto,int personas,
+             LocalDate entrada,LocalDate salida) {
+        return gestor.registrarReserva(cliente,cuarto, personas,entrada,salida);
     }
-    if (cliente == null || cuarto == null){
-        throw new IllegalArgumentException("Seleccione huesped y habitacion");
-    }
-    if (Entrada == null || Salida == null || !Salida.isAfter(Entrada)){
-        throw new IllegalArgumentException("La salida debe de posterior a la entrada");
-    }
-    if (Entrada.isBefore(LocalDate.now())){
-        throw new IllegalArgumentException("No se permite fechas anteriores a la de hoy");
-    }
-    if (personas <= 0){
-        throw new IllegalArgumentException("La cantidad de personas debe de ser mayor a cero");
-    }
-    long noches = ChronoUnit.DAYS.between(Entrada, Salida);
-    
-    long importe = Math.multiplyExact(noches, cuarto.getTarifaPorNoche());
-    
-    Reserva reserva = new Reserva(codigo.trim(), cliente, cuarto, personas, 
-            Entrada, Salida, noches, importe, EstadoReserva.Confirmada, 
-            gestor.getUsuarioActivo());
-    
-    gestor.RegistrarReserva(reserva);
-    return reserva;
-  }
 }
