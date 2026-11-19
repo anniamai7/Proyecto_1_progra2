@@ -19,7 +19,6 @@ public class LoginControlador {
                 (usuario.equals("recepcion2") && password.equals("Hotel456"))){
         GestorHotel.getInstancia().setUsuarioActivo(usuario);
         GestorHotel.getInstancia().actualizarVencimientos(java.time.LocalDate.now());
-        JOptionPane.showMessageDialog(vistaLogin, "Revisión de vencimientos realizada correctamente.");
         frmHotel frmHotel = new frmHotel();
         frmHotel.setVisible(true);
         vistaLogin.dispose();
